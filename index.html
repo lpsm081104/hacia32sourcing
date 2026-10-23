@@ -301,26 +301,100 @@
           aria-label="Filter schools"
           aria-describedby="classification-note"
         >
-          <label class="filter-label" for="level-filter"
-            >School level
-            <select id="level-filter" disabled>
-              <option value="all">All school levels</option>
-              <option value="middle">Middle school</option>
-              <option value="high">High school</option>
-              <option value="combined">Middle / high school</option>
-              <option value="other">Other school levels</option>
-              <option value="unknown">Level not specified</option>
-            </select>
-          </label>
-          <label class="filter-label" for="ownership-filter"
-            >Public or private
-            <select id="ownership-filter" disabled>
-              <option value="all">Public and private · all</option>
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-              <option value="unknown">Not specified</option>
-            </select>
-          </label>
+          <div class="filter-label">
+            <span id="level-label">School levels · choose one or more</span>
+            <details class="multi-select">
+              <summary aria-labelledby="level-label level-summary">
+                <span id="level-summary">All school levels</span>
+              </summary>
+              <fieldset
+                id="level-filter"
+                data-summary="level-summary"
+                data-all-label="All school levels"
+                disabled
+              >
+                <legend class="sr-only">School levels</legend>
+                <p>Match any selected level. No selection shows all.</p>
+                <label
+                  ><input
+                    type="checkbox"
+                    value="middle"
+                    data-label="Middle school"
+                  />Middle school</label
+                >
+                <label
+                  ><input
+                    type="checkbox"
+                    value="high"
+                    data-label="High school"
+                  />High school</label
+                >
+                <label
+                  ><input
+                    type="checkbox"
+                    value="combined"
+                    data-label="Middle / high"
+                  />Middle / high school</label
+                >
+                <label
+                  ><input
+                    type="checkbox"
+                    value="other"
+                    data-label="Other levels"
+                  />Other school levels</label
+                >
+                <label
+                  ><input
+                    type="checkbox"
+                    value="unknown"
+                    data-label="Unspecified level"
+                  />Level not specified</label
+                >
+                <button type="button">Show all levels</button>
+              </fieldset>
+            </details>
+          </div>
+          <div class="filter-label">
+            <span id="ownership-label"
+              >Public or private · choose one or more</span
+            >
+            <details class="multi-select">
+              <summary aria-labelledby="ownership-label ownership-summary">
+                <span id="ownership-summary">All public/private statuses</span>
+              </summary>
+              <fieldset
+                id="ownership-filter"
+                data-summary="ownership-summary"
+                data-all-label="All public/private statuses"
+                disabled
+              >
+                <legend class="sr-only">Public or private</legend>
+                <p>Match any selected status. No selection shows all.</p>
+                <label
+                  ><input
+                    type="checkbox"
+                    value="public"
+                    data-label="Public"
+                  />Public</label
+                >
+                <label
+                  ><input
+                    type="checkbox"
+                    value="private"
+                    data-label="Private"
+                  />Private</label
+                >
+                <label
+                  ><input
+                    type="checkbox"
+                    value="unknown"
+                    data-label="Not specified"
+                  />Not specified</label
+                >
+                <button type="button">Show all statuses</button>
+              </fieldset>
+            </details>
+          </div>
           <label class="filter-label" for="name-filter"
             >Filter schools by name<input
               id="name-filter"
@@ -333,6 +407,7 @@
           School levels use international equivalents: middle = lower secondary,
           high = upper secondary. Public/private status comes from explicit
           source tags. Missing or unclear classifications stay “Not specified.”
+          Select multiple levels or statuses to combine them.
         </p>
         <p
           id="pins-status"
@@ -395,9 +470,9 @@
         <div>
           <h2>Open data. Open possibilities.</h2>
           <p>
-            Powered by OpenStreetMap, built for discovery. Coverage and school
-            details vary by location, so always verify information with the
-            school.
+            Powered by OpenStreetMap, built for discovery. Contact details and
+            hours appear when listed in the source. Hours may describe site
+            access; verify details with the school.
           </p>
         </div>
         <a

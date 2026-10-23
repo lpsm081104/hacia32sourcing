@@ -22,13 +22,17 @@ Optional fonts load from fonts.googleapis.com and fonts.gstatic.com with local f
 
 ## School classifications
 
-Results are grouped by level and can be filtered independently by level, public/private status, and school name. The combined middle/high category means a school explicitly offers both levels; selecting high school alone selects the high-only category. Filters persist across location searches.
+Results are grouped by level and can be filtered independently by level, public/private status, and school name. Both category filters support multiple checked options: a school may match any checked level and any checked ownership status, and must also match the name query. No checked options means all values for that filter. The combined middle/high category means a school explicitly offers both levels; selecting high school alone selects the high-only category. Filters persist across location searches.
 
 `classification.mjs` maps ISCED 2 (lower secondary) to middle school, ISCED 3 (upper secondary) to high school, and both to middle/high. Semicolon-separated levels and numeric ranges are supported. Explicit `school:level` equivalents are used if valid ISCED data is unavailable. Generic “secondary” is ambiguous and remains unspecified. Known non-secondary levels are grouped under other levels. International equivalents do not establish precise grades in every country.
 
 Public/private status uses explicit `ownership`, `operator:type`, or `school:type` tags. Conflicting explicit classifications remain unspecified. Names, fee status, religion, and funding alone do not establish ownership. No classification is inferred from school names, and unclassified schools remain visible in their own group. OpenStreetMap coverage may leave many results unclassified.
 
 Run classification regression tests with `node --test tests/classification.test.mjs`.
+
+## School contact details
+
+Cards show address, email, phone and opening hours from each OpenStreetMap object's tags. `contact:email` and `contact:phone` take priority over unprefixed `email` and `phone`. Multiple semicolon-separated contacts are preserved and deduplicated. Full addresses are preferred; otherwise available address components are combined. Missing values are labeled “Not listed”; the app does not fabricate them or infer them from nearby objects. Valid emails and phone numbers have mail/call links, while unusual source values remain plain text. Hours are displayed as listed, without making current open/closed claims or assuming the schedule is instructional rather than campus-access hours.
 
 ## Shared reached-out pins
 

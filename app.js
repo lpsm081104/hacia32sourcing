@@ -6,6 +6,7 @@ import {
 } from "./classification.mjs";
 import { teamConfig } from "./team-config.mjs";
 import { createTeamPins } from "./team-pins.mjs";
+import { schoolDetails, emailHref, phoneHref } from "./school-details.mjs";
 
 const teamPins = createTeamPins(teamConfig);
 const pendingPins = new Set();
@@ -69,12 +70,14 @@ function element(tag, text, className) {
 function render() {
   results.replaceChildren();
   const query = filter.value.trim().toLocaleLowerCase();
+  const selectedLevels = checkedValues(levelFilter);
+  const selectedOwnership = checkedValues(ownershipFilter);
   const visible = schools.filter(
     (school) =>
       school.name.toLocaleLowerCase().includes(query) &&
-      (levelFilter.value === "all" || school.level === levelFilter.value) &&
-      (ownershipFilter.value === "all" ||
-        school.ownership === ownershipFilter.value),
+      (!selectedLevels.length || selectedLevels.includes(school.level)) &&
+      (!selectedOwnership.length ||
+        selectedOwnership.includes(school.ownership)),
   );
   status.className = "";
   status.textContent = `${visible.length} of ${schools.length} mapped schools in ${locationLabel}. Results reflect OpenStreetMap coverage, not a complete directory.`;
@@ -116,11 +119,7 @@ function render() {
           `ownership ${school.ownership}`,
         ),
       );
-      card.append(
-        badges,
-        element("h4", school.name),
-        element("p", school.address || "Street address not listed"),
-      );
+      card.append(badges, element("h4", school.name), detailsList(school));
       const link = element("a", "View on OpenStreetMap");
       link.href = `https://www.openstreetmap.org/${school.type}/${school.id}`;
       link.target = "_blank";
@@ -217,13 +216,7 @@ form.addEventListener("submit", async (event) => {
         level: classifyLevel(item.tags),
         ownership: classifyOwnership(item.tags),
         name: item.tags?.name || item.tags?.["name:en"] || "Unnamed school",
-        address: [
-          item.tags?.["addr:housenumber"],
-          item.tags?.["addr:street"],
-          item.tags?.["addr:city"],
-        ]
-          .filter(Boolean)
-          .join(" "),
+        ...schoolDetails(item.tags),
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
     locationLabel = `${cityName}, ${names.of(countryCode)}`;
@@ -256,8 +249,68 @@ form.addEventListener("submit", async (event) => {
   }
 });
 filter.addEventListener("input", render);
-levelFilter.addEventListener("change", render);
-ownershipFilter.addEventListener("change", render);
+function checkedValues(fieldset) {
+  return [...fieldset.querySelectorAll("input:checked")].map(
+    (input) => input.value,
+  );
+}
+
+for (const fieldset of [levelFilter, ownershipFilter]) {
+  function updateSelection() {
+    const selected = [...fieldset.querySelectorAll("input:checked")];
+    const labels = selected.map((input) => input.dataset.label);
+    document.getElementById(fieldset.dataset.summary).textContent =
+      labels.length === 0
+        ? fieldset.dataset.allLabel
+        : labels.length <= 2
+          ? labels.join(" + ")
+          : `${labels.length} selected`;
+    if (hasSearched) render();
+  }
+  fieldset.addEventListener("change", updateSelection);
+  fieldset.querySelector("button").addEventListener("click", () => {
+    fieldset.querySelectorAll("input").forEach((input) => {
+      input.checked = false;
+    });
+    updateSelection();
+  });
+}
+document.addEventListener("click", (event) => {
+  document.querySelectorAll(".multi-select[open]").forEach((menu) => {
+    if (!menu.contains(event.target)) menu.open = false;
+  });
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  document.querySelectorAll(".multi-select[open]").forEach((menu) => {
+    if (menu.contains(document.activeElement))
+      menu.querySelector("summary").focus();
+    menu.open = false;
+  });
+});
+
+function detailsList(school) {
+  const list = element("dl", "", "school-details");
+  for (const [label, values, href] of [
+    ["Address", school.address ? [school.address] : [], null],
+    ["Email", school.emails, emailHref],
+    ["Phone", school.phones, phoneHref],
+    ["Hours (as listed)", school.hours ? [school.hours] : [], null],
+  ]) {
+    const row = element("div", "", "detail-row");
+    const description = element("dd", "", values.length ? "" : "not-listed");
+    if (!values.length) description.textContent = "Not listed";
+    for (const value of values) {
+      const target = href?.(value);
+      const entry = element(target ? "a" : "span", value);
+      if (target) entry.href = target;
+      description.append(entry);
+    }
+    row.append(element("dt", label), description);
+    list.append(row);
+  }
+  return list;
+}
 
 function pinButton(school) {
   const id = `${school.type}/${school.id}`;
