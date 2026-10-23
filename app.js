@@ -1,3 +1,15 @@
+import {
+  classifyLevel,
+  classifyOwnership,
+  levelLabels,
+  ownershipLabels,
+} from "./classification.mjs";
+import { teamConfig } from "./team-config.mjs";
+import { createTeamPins } from "./team-pins.mjs";
+
+const teamPins = createTeamPins(teamConfig);
+const pendingPins = new Set();
+
 const regions = {
   north: "CA US MX",
   central: "BZ CR SV GT HN NI PA",
@@ -13,11 +25,14 @@ const region = document.querySelector("#region");
 const country = document.querySelector("#country");
 const city = document.querySelector("#city");
 const filter = document.querySelector("#name-filter");
+const levelFilter = document.querySelector("#level-filter");
+const ownershipFilter = document.querySelector("#ownership-filter");
 const results = document.querySelector("#results");
 const status = document.querySelector("#status");
 const submit = document.querySelector("#submit");
 let schools = [];
 let locationLabel = "";
+let hasSearched = false;
 
 function populateCountries() {
   const previous = country.value;
@@ -54,8 +69,12 @@ function element(tag, text, className) {
 function render() {
   results.replaceChildren();
   const query = filter.value.trim().toLocaleLowerCase();
-  const visible = schools.filter((school) =>
-    school.name.toLocaleLowerCase().includes(query),
+  const visible = schools.filter(
+    (school) =>
+      school.name.toLocaleLowerCase().includes(query) &&
+      (levelFilter.value === "all" || school.level === levelFilter.value) &&
+      (ownershipFilter.value === "all" ||
+        school.ownership === ownershipFilter.value),
   );
   status.className = "";
   status.textContent = `${visible.length} of ${schools.length} mapped schools in ${locationLabel}. Results reflect OpenStreetMap coverage, not a complete directory.`;
@@ -65,32 +84,52 @@ function render() {
       element(
         "h3",
         schools.length
-          ? "No names match your filter."
+          ? "No schools match these filters."
           : "No mapped schools found.",
       ),
       element(
         "p",
         schools.length
-          ? "Try a shorter name or clear the filter."
+          ? "Try another school level or public/private status, or clear the name filter. Some schools have no classification data."
           : "Try another city. This does not mean there are no schools in this location.",
       ),
     );
     results.append(empty);
     return;
   }
-  for (const school of visible) {
-    const card = element("article", "", "school");
-    card.append(
-      element("span", "SCHOOL", "category"),
-      element("h3", school.name),
-      element("p", school.address || "Street address not listed"),
-    );
-    const link = element("a", "View on OpenStreetMap");
-    link.href = `https://www.openstreetmap.org/${school.type}/${school.id}`;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    card.append(link);
-    results.append(card);
+  for (const [level, label] of Object.entries(levelLabels)) {
+    const groupSchools = visible.filter((school) => school.level === level);
+    if (!groupSchools.length) continue;
+    const group = element("section", "", "school-group");
+    const heading = element("h3", label, "group-heading");
+    heading.append(element("span", String(groupSchools.length), "group-count"));
+    group.append(heading);
+    const grid = element("div", "", "school-grid");
+    for (const school of groupSchools) {
+      const card = element("article", "", "school");
+      const badges = element("div", "", "school-badges");
+      badges.append(
+        element("span", levelLabels[school.level], "category"),
+        element(
+          "span",
+          ownershipLabels[school.ownership],
+          `ownership ${school.ownership}`,
+        ),
+      );
+      card.append(
+        badges,
+        element("h4", school.name),
+        element("p", school.address || "Street address not listed"),
+      );
+      const link = element("a", "View on OpenStreetMap");
+      link.href = `https://www.openstreetmap.org/${school.type}/${school.id}`;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      card.append(link, pinButton(school));
+      grid.append(card);
+    }
+    group.append(grid);
+    results.append(group);
   }
 }
 
@@ -119,8 +158,11 @@ form.addEventListener("submit", async (event) => {
   submit.disabled = true;
   submit.querySelector(".button-label").textContent = "Searching…";
   filter.disabled = true;
+  levelFilter.disabled = true;
+  ownershipFilter.disabled = true;
   filter.value = "";
   schools = [];
+  hasSearched = false;
   results.replaceChildren();
   results.setAttribute("aria-busy", "true");
   status.className = "";
@@ -172,6 +214,8 @@ form.addEventListener("submit", async (event) => {
       .map((item) => ({
         id: item.id,
         type: item.type,
+        level: classifyLevel(item.tags),
+        ownership: classifyOwnership(item.tags),
         name: item.tags?.name || item.tags?.["name:en"] || "Unnamed school",
         address: [
           item.tags?.["addr:housenumber"],
@@ -183,7 +227,10 @@ form.addEventListener("submit", async (event) => {
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
     locationLabel = `${cityName}, ${names.of(countryCode)}`;
+    hasSearched = true;
     filter.disabled = schools.length === 0;
+    levelFilter.disabled = schools.length === 0;
+    ownershipFilter.disabled = schools.length === 0;
     render();
   } catch (error) {
     status.className = "error";
@@ -209,3 +256,155 @@ form.addEventListener("submit", async (event) => {
   }
 });
 filter.addEventListener("input", render);
+levelFilter.addEventListener("change", render);
+ownershipFilter.addEventListener("change", render);
+
+function pinButton(school) {
+  const id = `${school.type}/${school.id}`;
+  const pinned = teamPins.has(id);
+  const button = element("button", "", `pin-button${pinned ? " pinned" : ""}`);
+  button.type = "button";
+  button.dataset.pinId = id;
+  button.setAttribute("aria-pressed", String(pinned));
+  button.setAttribute(
+    "aria-label",
+    `${pinned ? "Remove reached-out pin from" : "Mark reached out to"} ${school.name}`,
+  );
+  const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  icon.setAttribute("viewBox", "0 0 24 24");
+  icon.setAttribute("aria-hidden", "true");
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", "m8 3 8 0-1 6 3 4H6l3-4-1-6Zm4 10v8");
+  icon.append(path);
+  const label = !teamPins.configured
+    ? "Pins not connected"
+    : !teamPins.signedIn
+      ? "Sign in to use pins"
+      : !teamPins.ready
+        ? "Pin status unavailable"
+        : pendingPins.has(id)
+          ? "Saving…"
+          : pinned
+            ? "Reached out"
+            : "Mark reached out";
+  button.append(icon, element("span", label));
+  button.disabled =
+    !teamPins.configured ||
+    pendingPins.has(id) ||
+    (teamPins.signedIn && !teamPins.ready);
+  button.addEventListener("click", async () => {
+    if (!teamPins.signedIn) {
+      openTeamDialog();
+      return;
+    }
+    if (
+      pinned &&
+      !window.confirm(`Remove the team's reached-out pin from ${school.name}?`)
+    )
+      return;
+    pendingPins.add(id);
+    button.disabled = true;
+    button.querySelector("span").textContent = "Saving…";
+    try {
+      await teamPins.set(id, !pinned);
+      pinStatus.textContent = pinned
+        ? `Reached-out pin removed from ${school.name}.`
+        : `${school.name} is marked as reached out for the team.`;
+    } catch (error) {
+      pinStatus.textContent = error.message;
+    } finally {
+      pendingPins.delete(id);
+      if (hasSearched) render();
+      results
+        .querySelector(`[data-pin-id="${id}"]`)
+        ?.focus({ preventScroll: true });
+    }
+  });
+  return button;
+}
+
+const teamDialog = document.querySelector("#team-dialog");
+const teamForm = document.querySelector("#team-form");
+const teamMessage = document.querySelector("#team-message");
+const pinStatus = document.querySelector("#pins-status");
+const refreshPins = document.querySelector("#refresh-pins");
+const signOut = document.querySelector("#team-signout");
+function updateTeamUi() {
+  teamForm.hidden = !teamPins.configured || teamPins.signedIn;
+  signOut.hidden = !teamPins.signedIn;
+  refreshPins.hidden = !teamPins.signedIn;
+  document.querySelector("#open-team").textContent = teamPins.signedIn
+    ? "Team connected"
+    : "Team pins";
+  if (!teamPins.signedIn)
+    pinStatus.textContent = teamPins.configured
+      ? "Sign in to see the team's reached-out pins."
+      : "Team pins are not connected yet. School search and filters are available.";
+}
+function openTeamDialog() {
+  teamMessage.textContent = !teamPins.configured
+    ? "Shared pins are not connected yet. The site owner needs to finish setup before the team can use them."
+    : teamPins.signedIn
+      ? "You are signed in. Pins are shared with your team. Refresh to see the latest updates."
+      : "Sign in with the team account provided by the site owner. Pins show schools someone on your team has already contacted.";
+  updateTeamUi();
+  teamDialog.showModal();
+}
+document.querySelector("#open-team").addEventListener("click", openTeamDialog);
+document
+  .querySelector("#close-team")
+  .addEventListener("click", () => teamDialog.close());
+teamForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = teamForm.querySelector("button");
+  button.disabled = true;
+  teamMessage.textContent = "Signing in…";
+  try {
+    await teamPins.signIn(
+      document.querySelector("#team-email").value.trim(),
+      document.querySelector("#team-password").value,
+    );
+    pinStatus.textContent =
+      "Team pins loaded. Updates are checked every minute while this page is open.";
+    teamDialog.close();
+  } catch (error) {
+    teamMessage.textContent = error.message;
+  } finally {
+    document.querySelector("#team-password").value = "";
+    button.disabled = false;
+    updateTeamUi();
+    if (hasSearched) render();
+  }
+});
+async function syncPins() {
+  if (!teamPins.signedIn || pendingPins.size) return;
+  refreshPins.disabled = true;
+  try {
+    await teamPins.refresh();
+    pinStatus.textContent =
+      "Team pins are up to date. An unpinned school has no shared reached-out pin recorded.";
+    teamMessage.textContent = "Team pins are up to date.";
+  } catch (error) {
+    pinStatus.textContent = error.message;
+    teamMessage.textContent = error.message;
+  } finally {
+    refreshPins.disabled = false;
+    if (hasSearched) render();
+  }
+}
+refreshPins.addEventListener("click", syncPins);
+signOut.addEventListener("click", async () => {
+  try {
+    await teamPins.signOut();
+  } catch {
+    /* The in-memory session is cleared even if remote logout fails. */
+  }
+  updateTeamUi();
+  teamMessage.textContent = "Signed out. Sign in again to see team pins.";
+  pinStatus.textContent = "Sign in to see the team's reached-out pins.";
+  if (hasSearched) render();
+});
+setInterval(() => {
+  if (!document.hidden) syncPins();
+}, 60000);
+updateTeamUi();

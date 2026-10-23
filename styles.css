@@ -605,7 +605,7 @@ button {
   padding: 6px 9px;
   border-radius: 3px;
 }
-.school h3 {
+.school h4 {
   font-family: "Libre Caslon Display", Georgia, serif;
   font-weight: 400;
   font-size: 26px;
@@ -1082,5 +1082,251 @@ footer a span {
   }
   .hero-copy {
     width: 100%;
+  }
+}
+
+.results-filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 16px;
+  padding: 20px;
+  background: #f0f3e8;
+  border: 1px solid #e0e5d5;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+.results-filters .filter-label {
+  font-size: 10px;
+  font-weight: 500;
+}
+.results-filters input,
+.results-filters select {
+  width: 100%;
+  height: 42px;
+  margin-top: 8px;
+  background-color: #fff;
+  font-size: 12px;
+}
+.classification-note {
+  color: #69746a;
+  font-size: 10px;
+  line-height: 1.8;
+  margin: 0 0 18px;
+  max-width: 860px;
+}
+select:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.school-group {
+  grid-column: 1/-1;
+  min-width: 0;
+  margin-bottom: 14px;
+}
+.group-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 12px 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #dfe3d7;
+}
+.group-count {
+  display: inline-grid;
+  place-content: center;
+  background: #e9eedc;
+  color: #536b43;
+  font-size: 10px;
+  min-width: 25px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 20px;
+}
+.school-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.school-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-right: 20px;
+}
+.school-badges .category {
+  font-size: 9px;
+  letter-spacing: 0.2px;
+}
+.ownership {
+  font-size: 9px;
+  padding: 6px 9px;
+  border-radius: 3px;
+  background: #edf1f6;
+  color: #4c6280;
+}
+.ownership.private {
+  background: #f4eee3;
+  color: #7b6036;
+}
+.ownership.unknown {
+  background: #f2f2ee;
+  color: #6b7265;
+}
+.school h4 {
+  margin-top: 18px;
+}
+@media (max-width: 760px) {
+  .school-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .results-filters {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 16px;
+  }
+  .results-filters label:last-child {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 500px) {
+  .school-grid {
+    grid-template-columns: 1fr;
+  }
+  .results-filters {
+    grid-template-columns: 1fr;
+  }
+  .school-badges {
+    padding-right: 24px;
+  }
+}
+
+.team-trigger {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid #c9d3bd;
+  border-radius: 5px;
+  padding: 9px 14px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.team-trigger:hover {
+  background: #eaf0de;
+}
+.school .pin-button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  padding: 9px 10px;
+  width: 100%;
+  background: #f5f7ef;
+  color: #536b43;
+  border: 1px solid #dbe3ce;
+  border-radius: 4px;
+  font-size: 10px;
+  min-height: 36px;
+}
+.pin-button svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+.school .pin-button.pinned {
+  background: #e2edcc;
+  border-color: #a2b882;
+  color: #26472b;
+}
+.pin-button.pinned svg {
+  fill: #c0d799;
+}
+.pin-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.pin-button:not(:disabled):hover {
+  border-color: #7f9862;
+}
+dialog {
+  width: min(440px, calc(100% - 32px));
+  padding: 28px;
+  border: 1px solid #d9e2cc;
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 20px 90px #102d3933;
+}
+dialog::backdrop {
+  background: #102d3980;
+  backdrop-filter: blur(3px);
+}
+.dialog-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.dialog-top h2 {
+  font-family: "Libre Caslon Display", Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+  margin: 0;
+}
+.dialog-top button {
+  font-size: 11px;
+  border: 0;
+  background: none;
+  color: #5e7350;
+  padding: 8px;
+}
+#team-message {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #627455;
+}
+#team-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#team-form[hidden] {
+  display: none;
+}
+#team-form input {
+  margin-top: 8px;
+  background: #fff;
+}
+.team-dialog-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+#team-form button,
+.team-dialog-actions button {
+  border: 1px solid #47633c;
+  background: var(--ink);
+  border-radius: 5px;
+  color: white;
+  padding: 12px 18px;
+  font-size: 12px;
+}
+#team-form button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 760px) {
+  .header {
+    gap: 12px;
+  }
+  .header nav {
+    display: none;
   }
 }
