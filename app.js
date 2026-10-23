@@ -7,6 +7,7 @@ import {
 import { teamConfig } from "./team-config.mjs";
 import { createTeamPins } from "./team-pins.mjs";
 import { schoolDetails, emailHref, phoneHref } from "./school-details.mjs";
+import { createCityPicker } from "./city-picker.mjs";
 
 const teamPins = createTeamPins(teamConfig);
 const pendingPins = new Set();
@@ -25,6 +26,11 @@ const form = document.querySelector("#search-form");
 const region = document.querySelector("#region");
 const country = document.querySelector("#country");
 const city = document.querySelector("#city");
+const cityPicker = createCityPicker({
+  select: city,
+  manual: document.querySelector("#manual-city"),
+  hint: document.querySelector("#city-hint"),
+});
 const filter = document.querySelector("#name-filter");
 const levelFilter = document.querySelector("#level-filter");
 const ownershipFilter = document.querySelector("#ownership-filter");
@@ -47,16 +53,22 @@ function populateCountries() {
     .forEach((code) => country.add(new Option(names.of(code), code)));
   country.value = previous;
 }
-region.addEventListener("change", populateCountries);
+region.addEventListener("change", () => {
+  const previous = country.value;
+  populateCountries();
+  if (country.value !== previous) cityPicker.load(country.value);
+});
+country.addEventListener("change", () => cityPicker.load(country.value));
 populateCountries();
+cityPicker.load("");
 
 document.querySelectorAll("[data-city]").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
     region.value = button.dataset.region;
     populateCountries();
     country.value = button.dataset.country;
-    city.value = button.dataset.city;
-    submit.focus();
+    await cityPicker.load(button.dataset.country, button.dataset.city);
+    if (country.value === button.dataset.country) submit.focus();
   });
 });
 
@@ -153,11 +165,12 @@ async function getJson(url, options = {}) {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  const cityName = city.value.trim();
-  if (!cityName || !country.value) {
-    city.reportValidity();
+  const selectedCity = cityPicker.selection();
+  if (!selectedCity || !country.value) {
+    cityPicker.reportValidity();
     return;
   }
+  const cityName = selectedCity.name;
   const countryCode = country.value;
   submit.disabled = true;
   submit.querySelector(".button-label").textContent = "Searching…";
@@ -178,6 +191,7 @@ form.addEventListener("submit", async (event) => {
       format: "jsonv2",
       limit: "1",
     });
+    if (selectedCity.state) params.set("state", selectedCity.state);
     const places = await getJson(
       `https://nominatim.openstreetmap.org/search?${params}`,
     );
@@ -233,7 +247,11 @@ form.addEventListener("submit", async (event) => {
         ...schoolDetails(item.tags),
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
-    locationLabel = `${cityName}, ${names.of(countryCode)}`;
+    locationLabel = [
+      ...new Set(
+        [cityName, selectedCity.state, names.of(countryCode)].filter(Boolean),
+      ),
+    ].join(", ");
     hasSearched = true;
     filter.disabled = schools.length === 0;
     levelFilter.disabled = schools.length === 0;

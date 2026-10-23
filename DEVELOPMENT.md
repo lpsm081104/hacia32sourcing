@@ -12,6 +12,12 @@ python3 -m http.server 3000 --bind 0.0.0.0
 
 Open the forwarded port in your development environment. No install or build step is required. Check JavaScript syntax with `node --check app.js`.
 
+## Country-dependent city dropdown
+
+The city selector loads only the selected country's static `data/cities/<ISO>.json`. It supports native keyboard type-ahead and displays the first-level region beside each city. Changing countries resets both selected and manually entered cities; late responses from previous countries are ignored. A user can choose “Other city or town” for places missing from the major-city dataset, or enter a city if a list fails to load. The country list covers the application's 106 countries and territories, with 17,519 source place records in this snapshot. Some countries have empty lists. No external autocomplete requests are sent; Nominatim is used only after explicit school-search submission, with city, first-level region (for a listed selection), and country code.
+
+City data is from GeoNames via datasets/world-cities under CC BY 4.0, bundled separately from school data. Source, limitations, attribution, and regeneration commands are in [data/cities/README.md](data/cities/README.md). Regeneration is optional maintenance; normal startup requires no network access for city data beyond the site's own JSON files.
+
 ## Data and limitations
 
 Searches are submitted explicitly: Nominatim locates the selected city and Overpass returns OpenStreetMap objects tagged `amenity=school` within the city bounding box. Results can include nearby places within that rectangle and are not a complete school directory. Separately mapped objects for the same campus may appear more than once. Universities and colleges with other amenity tags are excluded. Data varies by location; missing addresses and unnamed schools are shown honestly. No sample schools are presented as live results.

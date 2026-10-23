@@ -1507,3 +1507,28 @@ dialog::backdrop {
 .school .local-classification:last-of-type {
   margin-bottom: 16px;
 }
+
+.city-hint {
+  display: block;
+  font-size: 9px;
+  line-height: 1.7;
+  color: #6f7c63;
+  margin-top: 7px;
+}
+#manual-city:not([hidden]) {
+  margin-top: 8px;
+}
+.data-note .city-attribution {
+  margin-top: 7px;
+  font-size: 9px;
+}
+.city-attribution a {
+  color: #596f49;
+  text-underline-offset: 3px;
+}
+@media (min-width: 1051px) {
+  #submit {
+    align-self: start;
+    margin-top: 20px;
+  }
+}

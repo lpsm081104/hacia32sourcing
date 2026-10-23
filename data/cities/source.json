@@ -1,0 +1,9 @@
+{
+  "source": "https://github.com/datasets/world-cities",
+  "download": "https://raw.githubusercontent.com/datasets/world-cities/master/data/world-cities.csv",
+  "sourceSha256": "d9f4173d48d50f58430e34215510b9a22f9e142354bb90f1f08e5a93964cff02",
+  "license": "CC-BY-4.0",
+  "attribution": "GeoNames, via datasets/world-cities",
+  "countries": 106,
+  "places": 17519
+}

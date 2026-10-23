@@ -220,14 +220,32 @@
           </div>
           <div class="field city">
             <label for="city">City or town</label
-            ><input
+            ><select
               id="city"
               name="city"
-              placeholder="Enter a city"
               required
+              disabled
+              aria-describedby="city-hint"
+            >
+              <option value="">Select a country first</option>
+            </select>
+            <label class="sr-only" for="manual-city">Other city or town</label>
+            <input
+              id="manual-city"
+              placeholder="Enter your city or town"
               maxlength="120"
               autocomplete="address-level2"
+              hidden
+              disabled
+              aria-describedby="city-hint"
             />
+            <small
+              id="city-hint"
+              class="city-hint"
+              role="status"
+              aria-live="polite"
+              >Choose a country to see its cities and towns.</small
+            >
           </div>
           <button id="submit" type="submit">
             <span class="button-label">Find schools</span
@@ -481,6 +499,29 @@
             Powered by OpenStreetMap, built for discovery. Contact details and
             hours appear when listed in the source. Hours may describe site
             access; verify details with the school.
+          </p>
+          <p class="city-attribution">
+            City list:
+            <a
+              href="https://www.geonames.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >GeoNames</a
+            >
+            via
+            <a
+              href="https://github.com/datasets/world-cities"
+              target="_blank"
+              rel="noopener noreferrer"
+              >world-cities</a
+            >
+            ·
+            <a
+              href="https://creativecommons.org/licenses/by/4.0/"
+              target="_blank"
+              rel="noopener noreferrer"
+              >CC BY 4.0</a
+            >. Country-filtered and reformatted; not a complete town directory.
           </p>
         </div>
         <a
