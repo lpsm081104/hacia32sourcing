@@ -318,16 +318,23 @@
                 <label
                   ><input
                     type="checkbox"
+                    value="primary"
+                    data-label="Primary school"
+                  />Primary school</label
+                >
+                <label
+                  ><input
+                    type="checkbox"
                     value="middle"
                     data-label="Middle school"
-                  />Middle school</label
+                  />Middle school / lower secondary</label
                 >
                 <label
                   ><input
                     type="checkbox"
                     value="high"
                     data-label="High school"
-                  />High school</label
+                  />High school / upper secondary</label
                 >
                 <label
                   ><input
@@ -404,10 +411,11 @@
           /></label>
         </div>
         <p class="classification-note" id="classification-note">
-          School levels use international equivalents: middle = lower secondary,
-          high = upper secondary. Public/private status comes from explicit
-          source tags. Missing or unclear classifications stay “Not specified.”
-          Select multiple levels or statuses to combine them.
+          Levels use ISCED tags first, then supported local terms for the
+          school's country. In Brazil: Fundamental I = primary; Fundamental II =
+          lower secondary; Ensino Médio = upper secondary. Original level and
+          sector wording is shown when available. Ambiguous terms stay “Not
+          specified.” You can select multiple categories.
         </p>
         <p
           id="pins-status"

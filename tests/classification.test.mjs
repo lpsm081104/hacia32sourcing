@@ -11,7 +11,7 @@ for (const [name, tags, expected] of [
     { "isced:level": "1-3" },
     "combined",
   ],
-  ["primary only", { "isced:level": "1" }, "other"],
+  ["primary only", { "isced:level": "1" }, "primary"],
   ["no source level", {}, "unknown"],
   ["name is not level evidence", { name: "Central High School" }, "unknown"],
   ["ambiguous secondary", { "school:level": "secondary" }, "unknown"],

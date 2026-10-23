@@ -1,6 +1,6 @@
 import {
-  classifyLevel,
-  classifyOwnership,
+  classificationInfo,
+  normalizeText,
   levelLabels,
   ownershipLabels,
 } from "./classification.mjs";
@@ -69,12 +69,12 @@ function element(tag, text, className) {
 
 function render() {
   results.replaceChildren();
-  const query = filter.value.trim().toLocaleLowerCase();
+  const query = normalizeText(filter.value);
   const selectedLevels = checkedValues(levelFilter);
   const selectedOwnership = checkedValues(ownershipFilter);
   const visible = schools.filter(
     (school) =>
-      school.name.toLocaleLowerCase().includes(query) &&
+      school.searchNames.includes(query) &&
       (!selectedLevels.length || selectedLevels.includes(school.level)) &&
       (!selectedOwnership.length ||
         selectedOwnership.includes(school.ownership)),
@@ -119,7 +119,12 @@ function render() {
           `ownership ${school.ownership}`,
         ),
       );
-      card.append(badges, element("h4", school.name), detailsList(school));
+      card.append(
+        badges,
+        element("h4", school.name),
+        ...classificationNotes(school),
+        detailsList(school),
+      );
       const link = element("a", "View on OpenStreetMap");
       link.href = `https://www.openstreetmap.org/${school.type}/${school.id}`;
       link.target = "_blank";
@@ -213,9 +218,18 @@ form.addEventListener("submit", async (event) => {
       .map((item) => ({
         id: item.id,
         type: item.type,
-        level: classifyLevel(item.tags),
-        ownership: classifyOwnership(item.tags),
+        ...classificationInfo(item.tags, countryCode),
         name: item.tags?.name || item.tags?.["name:en"] || "Unnamed school",
+        searchNames: normalizeText(
+          Object.entries(item.tags || {})
+            .filter(
+              ([key]) =>
+                ["name", "official_name", "alt_name"].includes(key) ||
+                key.startsWith("name:"),
+            )
+            .map(([, value]) => value)
+            .join(" ") || "Unnamed school",
+        ),
         ...schoolDetails(item.tags),
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
@@ -310,6 +324,20 @@ function detailsList(school) {
     list.append(row);
   }
   return list;
+}
+
+function classificationNotes(school) {
+  const notes = [];
+  for (const [label, value] of [
+    ["Listed level", school.localLevel],
+    ["Listed sector", school.localSector],
+  ]) {
+    if (!value) continue;
+    const note = element("p", "", "local-classification");
+    note.append(element("span", `${label}: `), document.createTextNode(value));
+    notes.push(note);
+  }
+  return notes;
 }
 
 function pinButton(school) {
