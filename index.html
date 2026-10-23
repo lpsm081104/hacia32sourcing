@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#183f35" />
+    <title>HACIA 32 · School Finder</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" type="module"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#search-heading">Skip to school search</a>
+    <header class="header">
+      <a class="brand" href="./" aria-label="HACIA 32 home"
+        ><span class="brand-mark" aria-hidden="true">h<span>32</span></span
+        ><span>HACIA 32<small>SCHOOL FINDER</small></span></a
+      >
+      <nav aria-label="Main navigation">
+        <a class="nav-active" href="#search-heading">Explore schools</a
+        ><a href="#about-data"
+          >About the data
+          <svg
+            class="external-icon"
+            aria-hidden="true"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <path d="M4 12 12 4M4 4h8v8" /></svg
+        ></a>
+      </nav>
+      <span class="header-note"><span></span> A world to discover</span>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            <span></span> BIG POSSIBILITIES. ONE SEARCH.
+          </div>
+          <h1 id="hero-heading">
+            A world of schools.<br /><em>Find your place.</em>
+          </h1>
+          <p>
+            From your neighborhood to across the ocean.<br />Discover schools in
+            the Americas and Europe.
+          </p>
+          <div class="hero-regions">
+            <span>THE AMERICAS</span
+            ><span class="region-separator" aria-hidden="true">✳</span
+            ><span>EUROPE</span>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <svg class="campus-art" viewBox="0 0 500 400" fill="none">
+            <defs>
+              <pattern
+                id="map-grid"
+                width="36"
+                height="36"
+                patternUnits="userSpaceOnUse"
+              >
+                <path d="M36 0H0V36" stroke="#a3c0a6" stroke-opacity=".13" />
+              </pattern>
+              <linearGradient
+                id="globe-fill"
+                x1="120"
+                y1="60"
+                x2="370"
+                y2="340"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop stop-color="#315e4f" />
+                <stop offset="1" stop-color="#244c40" />
+              </linearGradient>
+            </defs>
+            <circle cx="260" cy="190" r="158" fill="url(#globe-fill)" />
+            <circle cx="260" cy="190" r="158" fill="url(#map-grid)" />
+            <g stroke="#9ab79c" stroke-opacity=".35">
+              <circle cx="260" cy="190" r="158" />
+              <ellipse cx="260" cy="190" rx="97" ry="158" />
+              <ellipse cx="260" cy="190" rx="37" ry="158" />
+              <path d="M104 190H418M121 119H400M121 261H400" />
+              <ellipse
+                cx="260"
+                cy="190"
+                rx="204"
+                ry="68"
+                transform="rotate(-28 260 190)"
+                stroke-dasharray="4 7"
+              />
+            </g>
+            <path
+              d="M106 316L262 355L420 306L263 268L106 316Z"
+              fill="#365c48"
+              stroke="#8da77b"
+            />
+            <g stroke="#173e34" stroke-width="2" stroke-linejoin="round">
+              <path d="M140 305V215L212 197V322L140 305Z" fill="#d0d4b8" />
+              <path
+                d="M140 215L211 197L248 213L179 234L140 215Z"
+                fill="#eef0d9"
+              />
+              <path
+                d="M179 234L248 213V303L212 322L179 314V234Z"
+                fill="#a6b69a"
+              />
+              <path
+                d="M280 204L355 182L393 201V288L319 313L280 293V204Z"
+                fill="#b8c4a7"
+              />
+              <path
+                d="M280 204L355 182L393 201L319 225L280 204Z"
+                fill="#eef0d9"
+              />
+              <path d="M319 225V313L393 288V201L319 225Z" fill="#8fa68b" />
+              <path
+                d="M209 197L265 163L321 198V323L265 341L209 321V197Z"
+                fill="#e9e8cd"
+              />
+              <path
+                d="M209 197L265 163L321 198L265 218L209 197Z"
+                fill="#f8f2d6"
+              />
+              <path d="M265 218V341L321 323V198L265 218Z" fill="#b9c4a7" />
+              <path
+                d="M203 196L264 151L328 195L320 203L264 165L211 204L203 196Z"
+                fill="#cedb8c"
+              />
+              <path
+                d="M231 327V295C231 281 252 283 252 301V335"
+                fill="#315e4f"
+              />
+            </g>
+            <path d="M264 152V112" stroke="#e4ecc2" stroke-width="2" />
+            <path d="M265 112L294 122L265 132V112Z" fill="#d6e69b" />
+            <g fill="#315e4f" stroke="#173e34" stroke-width="1.5">
+              <path d="M223 227L236 231V250L223 246Z" />
+              <path d="M246 235L257 239V258L246 254Z" />
+              <path d="M223 260L236 264V278L223 274Z" />
+              <path d="M246 268L257 272V286L246 282Z" />
+              <path d="M280 236L291 232V249L280 253Z" />
+              <path d="M302 229L313 225V242L302 246Z" />
+              <path d="M280 269L291 265V282L280 286Z" />
+              <path d="M302 262L313 258V275L302 279Z" />
+              <path d="M151 239L164 243V260L151 256Z" />
+              <path d="M151 274L164 278V294L151 290Z" />
+              <path d="M336 239L348 235V252L336 256Z" />
+              <path d="M361 231L373 227V244L361 248Z" />
+              <path d="M336 272L348 268V285L336 289Z" />
+              <path d="M361 264L373 260V277L361 281Z" />
+            </g>
+            <path
+              d="M265 341L291 348L315 340L291 333L265 341Z"
+              fill="#e4e8c8"
+            />
+            <path
+              d="M294 351L319 358L343 350L319 343L294 351Z"
+              fill="#e4e8c8"
+              opacity=".65"
+            />
+            <path
+              d="M119 306V266M404 300V257"
+              stroke="#c0d3a0"
+              stroke-width="3"
+            />
+            <path
+              d="M119 227C90 249 98 273 119 270C145 274 145 248 119 227Z"
+              fill="#8ea775"
+              stroke="#173e34"
+              stroke-width="2"
+            />
+            <path
+              d="M404 217C377 240 382 264 404 261C429 265 432 240 404 217Z"
+              fill="#b4ca83"
+              stroke="#173e34"
+              stroke-width="2"
+            />
+            <circle cx="132" cy="107" r="6" fill="#d1e49a" />
+            <circle cx="407" cy="161" r="5" fill="#d1e49a" />
+            <path
+              d="M359 74V92M350 83H368M93 203V215M87 209H99"
+              stroke="#d1e49a"
+              stroke-width="2"
+            />
+          </svg>
+          <span class="art-label label-americas"
+            ><span></span> The Americas</span
+          ><span class="art-label label-europe"><span></span> Europe</span
+          ><span class="art-caption">GOOD THINGS START WITH DISCOVERY</span>
+        </div>
+      </section>
+      <section class="search-panel" aria-labelledby="search-heading">
+        <div class="section-top">
+          <h2 id="search-heading" tabindex="-1">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <circle cx="10.5" cy="10.5" r="6.5" />
+              <path d="m16 16 4 4" /></svg
+            >Where will you look next?
+          </h2>
+          <span>No borders to your curiosity.</span>
+        </div>
+        <form id="search-form">
+          <div class="field">
+            <label for="region">Region</label
+            ><select id="region">
+              <option value="all">All regions</option>
+              <option value="north">North America</option>
+              <option value="central">Central America</option>
+              <option value="caribbean">Caribbean</option>
+              <option value="south">South America</option>
+              <option value="europe">Europe</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="country">Country / territory</label
+            ><select id="country" required>
+              <option value="">Select a country</option>
+            </select>
+          </div>
+          <div class="field city">
+            <label for="city">City or town</label
+            ><input
+              id="city"
+              name="city"
+              placeholder="Enter a city"
+              required
+              maxlength="120"
+              autocomplete="address-level2"
+            />
+          </div>
+          <button id="submit" type="submit">
+            <span class="button-label">Find schools</span
+            ><svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <path d="M5 12h14m-6-6 6 6-6 6" />
+            </svg>
+          </button>
+        </form>
+        <div class="search-suggestions">
+          <span>A little inspiration:</span
+          ><button
+            type="button"
+            data-city="Bogotá"
+            data-country="CO"
+            data-region="south"
+          >
+            Bogotá
+            <svg
+              class="external-icon"
+              aria-hidden="true"
+              viewBox="0 0 16 16"
+              fill="none"
+            >
+              <path d="M4 12 12 4M4 4h8v8" />
+            </svg></button
+          ><button
+            type="button"
+            data-city="Mexico City"
+            data-country="MX"
+            data-region="north"
+          >
+            Mexico City
+            <svg
+              class="external-icon"
+              aria-hidden="true"
+              viewBox="0 0 16 16"
+              fill="none"
+            >
+              <path d="M4 12 12 4M4 4h8v8" />
+            </svg></button
+          ><button
+            type="button"
+            data-city="Madrid"
+            data-country="ES"
+            data-region="europe"
+          >
+            Madrid
+            <svg
+              class="external-icon"
+              aria-hidden="true"
+              viewBox="0 0 16 16"
+              fill="none"
+            >
+              <path d="M4 12 12 4M4 4h8v8" />
+            </svg>
+          </button>
+        </div>
+      </section>
+      <section class="results-section" aria-labelledby="results-heading">
+        <div class="section-top results-top">
+          <div>
+            <div class="eyebrow dark">YOUR NEXT CHAPTER STARTS HERE</div>
+            <h2 id="results-heading">
+              Explore the possibilities<span>.</span>
+            </h2>
+          </div>
+          <label class="filter-label" for="name-filter"
+            >Filter schools by name<input
+              id="name-filter"
+              type="search"
+              placeholder="Search within results…"
+              disabled
+          /></label>
+        </div>
+        <p id="status" role="status" aria-live="polite">
+          Choose a country and city to discover schools.
+        </p>
+        <div id="results" class="results">
+          <div class="empty">
+            <div class="empty-illustration" aria-hidden="true">
+              <svg viewBox="0 0 120 104" fill="none">
+                <circle cx="60" cy="50" r="39" fill="#e8eddb" />
+                <ellipse cx="60" cy="50" rx="39" ry="15" stroke="#a5b58b" />
+                <ellipse cx="60" cy="50" rx="18" ry="39" stroke="#a5b58b" />
+                <circle cx="60" cy="50" r="39" stroke="#a5b58b" />
+                <path d="M21 50h78M60 11v78" stroke="#a5b58b" />
+                <path
+                  d="M78 26c-8 0-14 6-14 14 0 10 14 23 14 23s14-13 14-23c0-8-6-14-14-14Z"
+                  fill="#214c3d"
+                  stroke="#f6f6ef"
+                  stroke-width="3"
+                />
+                <circle cx="78" cy="40" r="4" fill="#d5e6a2" />
+                <path
+                  d="M14 79v10m-5-5h10M103 12v10m-5-5h10"
+                  stroke="#b2c27f"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <div class="empty-copy">
+              <span class="empty-kicker">A PLACE TO BEGIN</span>
+              <h3>Big discoveries start with a little curiosity.</h3>
+              <p>
+                Pick a country. Choose a city. Find the schools<br
+                  class="desktop-break"
+                />
+                that make a place worth exploring.
+              </p>
+            </div>
+            <div class="empty-step" aria-hidden="true">
+              <span>01</span>Choose your location<svg
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path d="M12 19V5m-6 6 6-6 6 6" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+      <aside class="data-note" id="about-data">
+        <span class="data-icon" aria-hidden="true">i</span>
+        <div>
+          <h2>Open data. Open possibilities.</h2>
+          <p>
+            Powered by OpenStreetMap, built for discovery. Coverage and school
+            details vary by location, so always verify information with the
+            school.
+          </p>
+        </div>
+        <a
+          href="https://www.openstreetmap.org/about"
+          target="_blank"
+          rel="noopener noreferrer"
+          >About OpenStreetMap
+          <svg
+            class="external-icon"
+            aria-hidden="true"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <path d="M4 12 12 4M4 4h8v8" /></svg
+        ></a>
+      </aside>
+    </main>
+    <footer>
+      <span class="footer-brand"
+        >HACIA 32<span class="footer-divider">/</span
+        ><span>Built for curious minds.</span></span
+      ><a
+        href="https://www.openstreetmap.org/copyright"
+        target="_blank"
+        rel="noopener noreferrer"
+        >© OpenStreetMap contributors
+        <svg
+          class="external-icon"
+          aria-hidden="true"
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <path d="M4 12 12 4M4 4h8v8" /></svg
+      ></a>
+    </footer>
+  </body>
+</html>
